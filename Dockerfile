@@ -1,19 +1,22 @@
-# Dockerfile example for Node + yt-dlp
-FROM node:20
+# Use official Deno image
+FROM denoland/deno:alpine-1.38.0
 
-# Install yt-dlp
-RUN apt-get update && apt-get install -y wget ffmpeg && \
+# Install ffmpeg and yt-dlp
+RUN apk add --no-cache ffmpeg wget && \
     wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp && \
     chmod a+rx /usr/local/bin/yt-dlp
 
 # Set working directory
 WORKDIR /app
 
-# Copy files
+# Copy app files
 COPY . .
 
-# Install dependencies
-RUN npm install
+# Cache Deno dependencies (optional, for speed)
+RUN deno cache main.ts
 
-# Start app
-CMD ["npm", "start"]
+# Expose app port (if needed)
+EXPOSE 8000
+
+# Run your Deno app with permissions
+CMD ["run", "--allow-net", "--allow-run", "--allow-read", "--allow-write", "main.ts"]

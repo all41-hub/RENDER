@@ -1,0 +1,8 @@
+# Initialize git (if not already done)
+git init
+git add .
+git commit -m "Add video downloader API with yt-dlp"
+
+# Push to GitHub
+git remote add origin https://github.com/yourusername/video-downloader
+git push -u origin main

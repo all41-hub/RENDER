@@ -1,21 +1,43 @@
-FROM denoland/deno:alpine-1.38.0
+# Multi-stage build for optimal image size
+FROM node:18-alpine AS base
 
-# Install ffmpeg and yt-dlp
-RUN apk add --no-cache ffmpeg wget && \
-    wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp && \
-    chmod a+rx /usr/local/bin/yt-dlp
+# Install system dependencies
+RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    ffmpeg \
+    curl \
+    bash
+
+# Install yt-dlp
+RUN pip3 install --upgrade yt-dlp
 
 # Set working directory
 WORKDIR /app
 
-# Copy all files
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production && npm cache clean --force
+
+# Copy application code
 COPY . .
 
-# Cache the main file
-RUN deno cache supabase/functions/download-video/index.ts
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
 
-# Expose the default Deno port (change if needed)
-EXPOSE 8000
+# Change ownership of the app directory
+RUN chown -R nodejs:nodejs /app
+USER nodejs
 
-# Run the server
-CMD ["run", "--allow-net", "--allow-run", "--allow-read", "--allow-write", "supabase/functions/download-video/index.ts"]
+# Expose port
+EXPOSE 3001
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3001/health || exit 1
+
+# Start the application
+CMD ["node", "server.js"]

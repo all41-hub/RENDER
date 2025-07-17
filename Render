@@ -1,8 +1,8 @@
-# Initialize git (if not already done)
+# Push your code to GitHub first
 git init
 git add .
-git commit -m "Add video downloader API with yt-dlp"
+git commit -m "Video downloader API with yt-dlp"
 
-# Push to GitHub
+# Create repo on GitHub, then:
 git remote add origin https://github.com/yourusername/video-downloader
 git push -u origin main

@@ -19,4 +19,4 @@ RUN deno cache server.ts
 EXPOSE 8000
 
 # Run your Deno app with permissions
-CMD ["run", "--allow-net", "--allow-run", "--allow-read", "--allow-write", "main.ts"]
+CMD ["run", "--allow-net", "--allow-run", "--allow-read", "--allow-write", "server.ts"]

@@ -13,7 +13,7 @@ WORKDIR /app
 COPY . .
 
 # Cache Deno dependencies (optional, for speed)
-RUN deno cache main.ts
+RUN deno cache server.ts
 
 # Expose app port (if needed)
 EXPOSE 8000

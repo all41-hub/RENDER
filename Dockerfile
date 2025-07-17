@@ -1,4 +1,3 @@
-# Use official Deno image
 FROM denoland/deno:alpine-1.38.0
 
 # Install ffmpeg and yt-dlp
@@ -9,14 +8,14 @@ RUN apk add --no-cache ffmpeg wget && \
 # Set working directory
 WORKDIR /app
 
-# Copy app files
+# Copy all files
 COPY . .
 
-# Cache Deno dependencies (optional, for speed)
-RUN deno cache index.ts
+# Cache the main file
+RUN deno cache supabase/functions/download-video/index.ts
 
-# Expose app port (if needed)
+# Expose the default Deno port (change if needed)
 EXPOSE 8000
 
-# Run your Deno app with permissions
-CMD ["run", "--allow-net", "--allow-run", "--allow-read", "--allow-write", "index.ts"]
+# Run the server
+CMD ["run", "--allow-net", "--allow-run", "--allow-read", "--allow-write", "supabase/functions/download-video/index.ts"]

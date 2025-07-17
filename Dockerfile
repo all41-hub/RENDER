@@ -13,10 +13,10 @@ WORKDIR /app
 COPY . .
 
 # Cache Deno dependencies (optional, for speed)
-RUN deno cache server.ts
+RUN deno cache index.ts
 
 # Expose app port (if needed)
 EXPOSE 8000
 
 # Run your Deno app with permissions
-CMD ["run", "--allow-net", "--allow-run", "--allow-read", "--allow-write", "server.ts"]
+CMD ["run", "--allow-net", "--allow-run", "--allow-read", "--allow-write", "index.ts"]
